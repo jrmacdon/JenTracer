@@ -16,7 +16,6 @@ public class Vector3 {
         this.x = x;
         this.y = y;
         this.z = z;
-        
     }
 
     public Vector3(Vector3 vector) {
