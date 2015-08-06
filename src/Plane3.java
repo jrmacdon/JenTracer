@@ -7,7 +7,7 @@ public class Plane3 {
     private Vector3 color;
 
     public Plane3(){
-        this(new Vector3(0,-100,0), new Vector3(2,1,0), new Vector3(0.5, 0.5, 0.5));
+        this(new Vector3(0,-100,0), new Vector3(1,1,0), new Vector3(0.5, 0.5, 0.5));
 
     }
 
