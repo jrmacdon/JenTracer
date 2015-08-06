@@ -15,7 +15,7 @@ public class Vector3 {
     public Vector3(double x, double y, double z) {
         this.x = x;
         this.y = y;
-        this.z = z;
+        this.z = z; 
     }
 
     public Vector3(Vector3 vector) {
