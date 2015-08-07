@@ -20,12 +20,11 @@ public class VectorTests {
         sphereArray[2] = new Sphere3(new Vector3 (3,0,0),2, new Vector3 (0.8, 0.2, 0.2));
         sphereArray[3] = new Sphere3(new Vector3 (0,3.5,0),1);
 
-        Plane3 firstPlane = new Plane3();
+        Plane3 firstPlane = new Plane3(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.2, 0.5));
 
         Vector3 cameraPosition = new Vector3(0,1,20);
         Vector3 lightPosition = new Vector3(-30, 40, 5);
         double pixelWidth = worldWidth/screenWidth;
-        System.out.println(aspectRatio);
 
         double cameraDistance = 10;
 
@@ -44,17 +43,17 @@ public class VectorTests {
                 double finalDistance = 999999999999.9;
                 int sphereIdentity = 0;
 
-                intersect = firstPlane.intersect(test);
+                Vector3 normal = null;
+                Vector3 color = null;
 
 
 
-               /*
+
                 for (int k = 0; k<sphereArray.length; k++) {
                     //Calculate the intersection point for each sphere here
                     Vector3 intersectPoint = sphereArray[k].intersect(test);
                     if (intersectPoint != null) {
                         double distance1 = intersectPoint.distanceTo(cameraPosition);
-
 
                         if (intersect == null) {
                             intersect = intersectPoint;
@@ -64,19 +63,35 @@ public class VectorTests {
                             intersect = intersectPoint;
                             finalDistance = distance1;
                             sphereIdentity = k;
+
                         }
                     }
                 }
-*/
+
+                if (intersect != null) {
+                    normal = new Vector3(intersect.minus(sphereArray[sphereIdentity].getOrigin()));
+                    normal.normalize();
+                    color = new Vector3 (sphereArray[sphereIdentity].getColor());
+                }
+
+                    //calculates the intersection point of the plane and names the normal and color if the plane is in front of a sphere.
+                Vector3 intersectPoint = firstPlane.intersect(test);
+                if (intersectPoint != null) {
+                    double distance1 = intersectPoint.distanceTo(cameraPosition);
+
+                    if (distance1 < finalDistance) {
+                        intersect = intersectPoint;
+                        finalDistance = distance1;
+                        normal = new Vector3(firstPlane.getNormal());
+                        normal.normalize();
+                        color = new Vector3 (firstPlane.getColor());
+
+                    }
+                }
 
 
                 if (intersect != null) {
 
-                    Vector3 normal = firstPlane.getNormal();
-
-
-                    //Vector3 normal = new Vector3(sphereArray[sphereIdentity].getOrigin());
-                    //normal.scale(-1).add(intersect).normalize();
 
                     Vector3 lightVector = lightPosition.minus(intersect);
                     lightVector.normalize();
@@ -94,8 +109,6 @@ public class VectorTests {
                     Vector3 specular = new Vector3(s, s, s);
                     Vector3 light = new Vector3();
 
-                    Vector3 color = firstPlane.getColor();
-                    //Vector3 color = new Vector3 (sphereArray[sphereIdentity].getColor());
                     Vector3 ambient = new Vector3(0.1, 0.1, 0.24);
                     ambient.cwise(color);
                     Vector3 diffuse = new Vector3(0.7, 0.65, 0.5);
