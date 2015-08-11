@@ -14,13 +14,14 @@ public class VectorTests {
         double worldWidth = 7;
         double aspectRatio = (double) screenWidth/screenHeight;
         double worldHeight = worldWidth/aspectRatio;
-        Sphere3[] sphereArray = new Sphere3[4];
-        sphereArray[0] = new Sphere3(new Vector3 (0,1,0),2, new Vector3 (0.2, 0.5, 0.1));
-        sphereArray[1] = new Sphere3(new Vector3 (-3,0,0),3, new Vector3 (0.1, 0.2, 0.4));
-        sphereArray[2] = new Sphere3(new Vector3 (3,0,0),2, new Vector3 (0.8, 0.2, 0.2));
-        sphereArray[3] = new Sphere3(new Vector3 (0,3.5,0),1);
+        Geometry[] geometryArray = new Geometry[6];
+        geometryArray[0] = new Sphere3(new Vector3 (0,1,0),2, new Vector3 (0.2, 0.5, 0.1));
+        geometryArray[1] = new Sphere3(new Vector3 (-3,0,0),3, new Vector3 (0.1, 0.2, 0.4));
+        geometryArray[2] = new Sphere3(new Vector3 (3,0,0),2, new Vector3 (0.8, 0.2, 0.2));
+        geometryArray[3] = new Sphere3(new Vector3 (0,3.5,0),1);
+        geometryArray[4] = new Plane3(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.2, 0.5));
+        geometryArray[5] = new Plane3(new Vector3(-3,0,0), new Vector3(1,0,0), new Vector3(0.5, 0.5, 0.5));
 
-        Plane3 firstPlane = new Plane3(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.2, 0.5));
 
         Vector3 cameraPosition = new Vector3(0,1,20);
         Vector3 lightPosition = new Vector3(-30, 40, 5);
@@ -38,59 +39,31 @@ public class VectorTests {
 
                 Vector3 cameraDirection = new Vector3(worldPixel.minus(cameraPosition));
                 Ray3 test = new Ray3(cameraPosition, cameraDirection);
-                Vector3 intersect = null;
-
-                double finalDistance = 999999999999.9;
-                int sphereIdentity = 0;
-
-                Vector3 normal = null;
-                Vector3 color = null;
+                IntersectResult finalResult = null;
 
 
+                for (int k = 0; k<geometryArray.length; k++) {
+                    //Calculate the intersection point for each object here, then choose which one to keep
+                    IntersectResult currentResult = geometryArray[k].intersect(test);
 
+                    if (currentResult != null) {
 
-                for (int k = 0; k<sphereArray.length; k++) {
-                    //Calculate the intersection point for each sphere here
-                    Vector3 intersectPoint = sphereArray[k].intersect(test);
-                    if (intersectPoint != null) {
-                        double distance1 = intersectPoint.distanceTo(cameraPosition);
+                        if (finalResult == null) {
+                            finalResult = currentResult;
 
-                        if (intersect == null) {
-                            intersect = intersectPoint;
-                            finalDistance = distance1;
-                            sphereIdentity = k;
-                        } else if (distance1 < finalDistance) {
-                            intersect = intersectPoint;
-                            finalDistance = distance1;
-                            sphereIdentity = k;
+                        } else if (currentResult.getDistanceToCamera() < finalResult.getDistanceToCamera()) {
+                            finalResult = currentResult;
 
                         }
                     }
                 }
 
-                if (intersect != null) {
-                    normal = new Vector3(intersect.minus(sphereArray[sphereIdentity].getOrigin()));
+
+                if (finalResult != null) {
+                    Vector3 normal = finalResult.getNormal();
                     normal.normalize();
-                    color = new Vector3 (sphereArray[sphereIdentity].getColor());
-                }
-
-                    //calculates the intersection point of the plane and names the normal and color if the plane is in front of a sphere.
-                Vector3 intersectPoint = firstPlane.intersect(test);
-                if (intersectPoint != null) {
-                    double distance1 = intersectPoint.distanceTo(cameraPosition);
-
-                    if (distance1 < finalDistance) {
-                        intersect = intersectPoint;
-                        finalDistance = distance1;
-                        normal = new Vector3(firstPlane.getNormal());
-                        normal.normalize();
-                        color = new Vector3 (firstPlane.getColor());
-
-                    }
-                }
-
-
-                if (intersect != null) {
+                    Vector3 color = finalResult.getColor();
+                    Vector3 intersect = finalResult.getIntersect();
 
 
                     Vector3 lightVector = lightPosition.minus(intersect);
