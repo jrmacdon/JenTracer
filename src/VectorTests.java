@@ -14,13 +14,15 @@ public class VectorTests {
         double worldWidth = 7;
         double aspectRatio = (double) screenWidth/screenHeight;
         double worldHeight = worldWidth/aspectRatio;
-        Geometry[] geometryArray = new Geometry[6];
-        geometryArray[0] = new Sphere3(new Vector3 (0,1,0),2, new Vector3 (0.2, 0.5, 0.1));
-        geometryArray[1] = new Sphere3(new Vector3 (-3,0,0),3, new Vector3 (0.1, 0.2, 0.4));
-        geometryArray[2] = new Sphere3(new Vector3 (3,0,0),2, new Vector3 (0.8, 0.2, 0.2));
-        geometryArray[3] = new Sphere3(new Vector3 (0,3.5,0),1);
-        geometryArray[4] = new Plane3(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.2, 0.5));
-        geometryArray[5] = new Plane3(new Vector3(-3,0,0), new Vector3(1,0,0), new Vector3(0.5, 0.5, 0.5));
+
+        Scene myScene = new Scene(6);
+        myScene.put(new Sphere3(new Vector3 (0,1,0),2, new Vector3 (0.2, 0.5, 0.1)));
+        myScene.put(new Sphere3(new Vector3 (-3,0,0),3, new Vector3 (0.1, 0.2, 0.4)));
+        myScene.put(new Sphere3(new Vector3 (3,0,0),2, new Vector3 (0.8, 0.2, 0.2)));
+        myScene.put(new Sphere3(new Vector3 (0,3.5,0),1));
+        myScene.put(new Plane3(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.2, 0.5)));
+        myScene.put(new Plane3(new Vector3(-3,0,0), new Vector3(1,0,0), new Vector3(0.5, 0.5, 0.5)));
+
 
 
         Vector3 cameraPosition = new Vector3(0,1,20);
@@ -38,25 +40,11 @@ public class VectorTests {
                 Vector3 worldPixel = new Vector3(-0.5*worldWidth + cameraPosition.getX() + 0.5*pixelWidth + j*pixelWidth, 0.5*worldHeight + cameraPosition.getY() - 0.5*pixelWidth - i*pixelWidth,cameraPosition.getZ() - cameraDistance);
 
                 Vector3 cameraDirection = new Vector3(worldPixel.minus(cameraPosition));
+
+
                 Ray3 test = new Ray3(cameraPosition, cameraDirection);
-                IntersectResult finalResult = null;
-
-
-                for (int k = 0; k<geometryArray.length; k++) {
-                    //Calculate the intersection point for each object here, then choose which one to keep
-                    IntersectResult currentResult = geometryArray[k].intersect(test);
-
-                    if (currentResult != null) {
-
-                        if (finalResult == null) {
-                            finalResult = currentResult;
-
-                        } else if (currentResult.getDistanceToCamera() < finalResult.getDistanceToCamera()) {
-                            finalResult = currentResult;
-
-                        }
-                    }
-                }
+                IntersectResult finalResult = myScene.castRay(test);
+                
 
 
                 if (finalResult != null) {
