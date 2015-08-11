@@ -1,10 +1,8 @@
 /**
  * Created by kevin on 8/6/15.
  */
-public class Plane3 {
-    private Vector3 origin;
+public class Plane3 extends Geometry {
     private Vector3 normal;
-    private Vector3 color;
 
     public Plane3(){
         this(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.5, 0.5));
@@ -12,13 +10,16 @@ public class Plane3 {
     }
 
     public Plane3(Vector3 point, Vector3 normal, Vector3 color){
-        this.origin = point;
+        this.setOrigin(point);
         this.normal = normal;
-        this.color = color;
+        this.setColor(color);
     }
 
-    public Vector3 intersect(Ray3 ray){
+    public IntersectResult intersect(Ray3 ray){
         //intersection code
+
+        Vector3 intersection = null;
+        double distanceToCamera;
 
         double a = this.getNormal().dot(this.getOrigin());
         double b = this.getNormal().dot(ray.getOrigin());
@@ -37,24 +38,23 @@ public class Plane3 {
             double y = ray.getDirection().getY()*t + ray.getOrigin().getY();
             double z = ray.getDirection().getZ()*t + ray.getOrigin().getZ();
 
-            Vector3 intersection = new Vector3(x, y, z);
-            return intersection;
+            intersection = new Vector3(x, y, z);
+        }
+
+        if (intersection != null){
+            distanceToCamera = intersection.distanceTo(ray.getOrigin());
+            IntersectResult result = new IntersectResult(intersection, normal, distanceToCamera, getColor());
+            return result;
         } else{
             return null;
         }
 
-
     }
 
-
-    public Vector3 getOrigin(){
-        return origin;
-    }
 
     public Vector3 getNormal(){
         return normal;
     }
 
-    public Vector3 getColor() { return color;  }
 
 }

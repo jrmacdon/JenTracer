@@ -1,10 +1,8 @@
 /**
  * Created by kevin on 7/20/15.
  */
-public class Sphere3 {
-    private Vector3 origin;
+public class Sphere3 extends Geometry {
     private double radius;
-    private Vector3 color;
 
     public Sphere3(){
         this(new Vector3(), 0);
@@ -15,33 +13,38 @@ public class Sphere3 {
     }
 
     public Sphere3(Vector3 origin, double radius, Vector3 color){
-        this.origin = origin;
+        this.setOrigin(origin);
         this.radius = radius;
-        this.color = color;
+        this.setColor(color);
     }
 
     public Sphere3(double x, double y, double z, double r){
-        this(new Vector3 (x,y,z),r);
+        this(new Vector3(x, y, z), r);
     }
 
     public void translate(Vector3 otherVector){
-        origin.add(otherVector);
+        getOrigin().add(otherVector);
     }
 
     public void scale(double s){
         radius = s*radius;
     }
 
-    public Vector3 intersect(Ray3 ray) {
+    public IntersectResult intersect(Ray3 ray) {
+        Vector3 intersect;
+        double distanceToCamera;
+        Vector3 normal;
+
+
         double a = ray.getOrigin().getX();
         double b = ray.getOrigin().getY();
         double c = ray.getOrigin().getZ();
         double d = ray.getDirection().getX();
         double e = ray.getDirection().getY();
         double f = ray.getDirection().getZ();
-        double h = origin.getX();
-        double i = origin.getY();
-        double j = origin.getZ();
+        double h = getOrigin().getX();
+        double i = getOrigin().getY();
+        double j = getOrigin().getZ();
         double r = radius;
 
         double k = d * d + e * e + f * f;
@@ -60,25 +63,28 @@ public class Sphere3 {
         }
 
         if (t2 > t1) {
-            Vector3 intersectPt = new Vector3(a + d * t1, b + e * t1, c + f * t1);
-            return intersectPt;
+            intersect = new Vector3(a + d * t1, b + e * t1, c + f * t1);
         } else {
-            Vector3 intersectPt = new Vector3(a + d * t2, b + e * t2, c + f * t2);
-            return intersectPt;
+            intersect = new Vector3(a + d * t2, b + e * t2, c + f * t2);
         }
+
+        if (intersect != null) {
+            normal = new Vector3(intersect.minus(getOrigin()));
+            normal.normalize();
+            distanceToCamera = intersect.distanceTo(ray.getOrigin());
+            return new IntersectResult(intersect, normal, distanceToCamera, getColor());
+
+        } else{
+            return null;
+        }
+
     }
 
-    public Vector3 getOrigin(){
-        return origin;
-    }
 
     public double getRadius(){
         return radius;
     }
 
-    public Vector3 getColor() {
-        return color;
-    }
 
 
 //        if (discriminant < 0) {
