@@ -33,7 +33,7 @@ public class Plane3 extends Geometry {
             return null;
         }
 
-        if (t > 0){
+        if (t > 0.000000000001){
             double x = ray.getDirection().getX()*t + ray.getOrigin().getX();
             double y = ray.getDirection().getY()*t + ray.getOrigin().getY();
             double z = ray.getDirection().getZ()*t + ray.getOrigin().getZ();

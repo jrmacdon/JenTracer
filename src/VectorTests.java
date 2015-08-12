@@ -17,16 +17,19 @@ public class VectorTests {
 
         Scene myScene = new Scene(6);
         myScene.put(new Sphere3(new Vector3 (0,1,0),2, new Vector3 (0.2, 0.5, 0.1)));
-        myScene.put(new Sphere3(new Vector3 (-3,0,0),3, new Vector3 (0.1, 0.2, 0.4)));
+        myScene.put(new Sphere3(new Vector3 (-3,4,0),2, new Vector3 (0.1, 0.2, 0.4)));
         myScene.put(new Sphere3(new Vector3 (3,0,0),2, new Vector3 (0.8, 0.2, 0.2)));
-        myScene.put(new Sphere3(new Vector3 (0,3.5,0),1));
+        myScene.put(new Sphere3(new Vector3 (0,1.5,8),0.5));
         myScene.put(new Plane3(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.2, 0.5)));
-        myScene.put(new Plane3(new Vector3(-3,0,0), new Vector3(1,0,0), new Vector3(0.5, 0.5, 0.5)));
+        //myScene.put(new Plane3(new Vector3(5,0,0), new Vector3(1,0,0), new Vector3(0.5, 0.5, 0.5)));
+        System.out.println(myScene.getNumGeometry());
+        System.out.println("start");
+
 
 
 
         Vector3 cameraPosition = new Vector3(0,1,20);
-        Vector3 lightPosition = new Vector3(-30, 40, 5);
+        Vector3 lightPosition = new Vector3(-30, 20, 0);
         double pixelWidth = worldWidth/screenWidth;
 
         double cameraDistance = 10;
@@ -44,10 +47,22 @@ public class VectorTests {
 
                 Ray3 test = new Ray3(cameraPosition, cameraDirection);
                 IntersectResult finalResult = myScene.castRay(test);
-                
+
+
 
 
                 if (finalResult != null) {
+                    Ray3 shadow = new Ray3(finalResult.getIntersect(), new Vector3(lightPosition.minus(finalResult.getIntersect())));
+                    IntersectResult shadowResult = myScene.castRay(shadow);
+                    if (shadowResult != null && shadowResult.getDistanceToCamera() > lightPosition.minus(shadow.getOrigin()).getLength()){
+                        shadowResult = null;
+                    }
+                    //if(shadowResult == null){
+                        //System.out.println("null");
+                    //} else if (shadowResult.getDistanceToCamera() < 0){
+                      //  System.out.println("has intersect" + shadowResult.getDistanceToCamera());
+                    //}
+
                     Vector3 normal = finalResult.getNormal();
                     normal.normalize();
                     Vector3 color = finalResult.getColor();
@@ -70,12 +85,12 @@ public class VectorTests {
                     Vector3 specular = new Vector3(s, s, s);
                     Vector3 light = new Vector3();
 
-                    Vector3 ambient = new Vector3(0.1, 0.1, 0.24);
+                    Vector3 ambient = new Vector3(0.4, 0.4, 0.4);
                     ambient.cwise(color);
                     Vector3 diffuse = new Vector3(0.7, 0.65, 0.5);
                     diffuse.cwise(color);
 
-                    if (normal.dot(lightVector) >= 0) {
+                    if (normal.dot(lightVector) >= 0 && shadowResult == null) {
                         light = diffuse.scale(normal.dot(lightVector)).add(ambient).add(specular);
                         light.clamp();
                     } else {

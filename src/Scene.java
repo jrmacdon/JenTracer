@@ -44,8 +44,12 @@ public class Scene {
             numGeometry++;
         }
     }
+
+    public int getNumGeometry() {
+        return numGeometry;
+    }
 /*
-    private Geometry[] expandStorage(){
+    private void expandStorage(){
        /* Geometry[] newArray = new Geometry[geometryArray.length + 1];
         return newArray;
         OR

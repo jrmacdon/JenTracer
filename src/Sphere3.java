@@ -31,7 +31,7 @@ public class Sphere3 extends Geometry {
     }
 
     public IntersectResult intersect(Ray3 ray) {
-        Vector3 intersect;
+        Vector3 intersect = null;
         double distanceToCamera;
         Vector3 normal;
 
@@ -62,11 +62,16 @@ public class Sphere3 extends Geometry {
             return null;
         }
 
-        if (t2 > t1) {
-            intersect = new Vector3(a + d * t1, b + e * t1, c + f * t1);
-        } else {
-            intersect = new Vector3(a + d * t2, b + e * t2, c + f * t2);
+        if (t1 > 0.00000000001 || t2 > 0.00000000001) {
+            if (t2 > t1) {
+                intersect = new Vector3(a + d * t1, b + e * t1, c + f * t1);
+            } else {
+                intersect = new Vector3(a + d * t2, b + e * t2, c + f * t2);
+            }
         }
+        //if (t1 < 0 || t2 <0) {
+          //  System.out.println(t1 + ", " + t2);
+        //}
 
         if (intersect != null) {
             normal = new Vector3(intersect.minus(getOrigin()));
