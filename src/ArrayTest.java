@@ -25,9 +25,25 @@ public class ArrayTest {
     public static void main(String[] args) {
         int[] ages = {50, 8, 2, -27, 29};
         extremes(ages);
-
+        int sum = sum(ages,0);
+        System.out.println(sum);
 
     }
 
+    public static int sum(int[] list, int i){
+        if (i < list.length){
+            return list[i] + sum(list,i+1);
+        }else{
+            return 0;
+        }
+    }
+/*
+    public static int sum(int[] list){
+        if (    < list.length){
+
+        }else{
+            return 0;
+        }
+    }*/
 
 }

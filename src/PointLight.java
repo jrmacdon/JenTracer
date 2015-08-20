@@ -34,7 +34,7 @@ public class PointLight extends Light {
 
         double diffuse_dp = normal.dot(lightVector);
         double s = Math.max(0, camVecReflection.dot(lightVector));
-        s = Math.pow(s, 9) * 0.85 * diffuse_dp;
+        s = Math.pow(s, 9) * 0.55 * diffuse_dp;
 
 
         Vector3 specular = new Vector3(s, s, s);
@@ -47,6 +47,28 @@ public class PointLight extends Light {
             addedLight = diffuse.scale(diffuse_dp).add(specular);
         }
 
-        return addedLight;
+        //attenuation
+
+        //double fade = Math.pow(0.998,getLightPosition().distanceTo(finalResult.getIntersect()));
+
+        //addedLight = addedLight.scale(fade);
+
+        double lightDistance = getLightPosition().distanceTo(finalResult.getIntersect());
+        double fade = 1;
+        double nearAttenuation = 5;
+        double farAttenuation = 28;
+
+        addedLight.scale(3);
+
+        if(lightDistance < nearAttenuation) {
+            return addedLight;
+        }else if(lightDistance < farAttenuation){
+            fade = (farAttenuation - lightDistance)/(farAttenuation-nearAttenuation);
+            return addedLight.scale(fade);
+
+        }else{
+            return addedLight.scale(0);
+
+        }
     }
 }

@@ -35,28 +35,27 @@ public class Scene {
     }
 
     public void put(Geometry object){
-       // if (numGeometry == geometryArray.length) {
-         //   geometryArray.expandStorage();
-
-       // }
+       if (numGeometry == geometryArray.length) {
+          this.expandStorage();
+       }
         if (numGeometry < geometryArray.length){
             geometryArray[numGeometry] = object;
             numGeometry++;
         }
+
     }
 
     public int getNumGeometry() {
         return numGeometry;
     }
-/*
-    private void expandStorage(){
-       /* Geometry[] newArray = new Geometry[geometryArray.length + 1];
-        return newArray;
-        OR
-        geometryArray = Geometry[geometryArray.length + 1];
-        return this;
 
-        //expands the size of geometryArray by 1 index.  Don't know how to do this. Don't want to create a new array, just want the current array to be one index longer.
-        return geometryArray;
-    } */
+    public void expandStorage(){
+        Geometry[] newArray = new Geometry[2*geometryArray.length];
+
+        for (int n = 0; n < geometryArray.length; n++){
+            newArray[n] = geometryArray[n];
+        }
+
+        geometryArray = newArray;
+    }
 }

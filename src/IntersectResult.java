@@ -4,14 +4,14 @@
 public class IntersectResult {
     private Vector3 intersect;
     private Vector3 normal;
-    private double distanceToCamera;
+    private double distanceToRayOrigin;
     private Vector3 color;
 
 
-    public IntersectResult(Vector3 intersect,Vector3 normal, double distanceToCamera, Vector3 color){
+    public IntersectResult(Vector3 intersect,Vector3 normal, double distanceToRayOrigin, Vector3 color){
         this.intersect = intersect;
         this.normal = normal;
-        this.distanceToCamera = distanceToCamera;
+        this.distanceToRayOrigin = distanceToRayOrigin;
         this.color = color;
     }
 
@@ -21,7 +21,7 @@ public class IntersectResult {
     }
 
     public double getDistanceToCamera() {
-        return distanceToCamera;
+        return distanceToRayOrigin;
     }
 
     public Vector3 getIntersect() {

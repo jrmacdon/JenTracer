@@ -8,5 +8,7 @@ public abstract class Light {
 
     public Vector3 getLightPosition(){ return lightPosition; }
 
-    public void setLightPosition(Vector3 lightPosition){ this.lightPosition = lightPosition; }
+    public void setLightPosition(Vector3 lightPosition){
+        this.lightPosition = lightPosition;
+    }
 }
