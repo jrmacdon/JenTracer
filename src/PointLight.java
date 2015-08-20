@@ -5,6 +5,16 @@ public class PointLight extends Light {
 
     public PointLight(double x, double y, double z){
         this.setLightPosition(new Vector3(x,y,z));
+        this.setNearAttenuation(100);
+        this.setFarAttenuation(101);
+        this.setIntensity(1);
+    }
+
+    public PointLight(double x, double y, double z, double intensity, double near, double far){
+        this.setLightPosition(new Vector3(x,y,z));
+        this.setNearAttenuation(near);
+        this.setFarAttenuation(far);
+        this.setIntensity(intensity);
     }
 
     public Vector3 addedLight(IntersectResult finalResult, Vector3 cameraPosition, Scene myScene){
@@ -55,15 +65,14 @@ public class PointLight extends Light {
 
         double lightDistance = getLightPosition().distanceTo(finalResult.getIntersect());
         double fade = 1;
-        double nearAttenuation = 5;
-        double farAttenuation = 28;
 
-        addedLight.scale(3);
 
-        if(lightDistance < nearAttenuation) {
+        addedLight.scale(getIntensity());
+
+        if(lightDistance < getNearAttenuation()) {
             return addedLight;
-        }else if(lightDistance < farAttenuation){
-            fade = (farAttenuation - lightDistance)/(farAttenuation-nearAttenuation);
+        }else if(lightDistance < getFarAttenuation()){
+            fade = (getFarAttenuation() - lightDistance)/(getFarAttenuation()-getNearAttenuation());
             return addedLight.scale(fade);
 
         }else{

@@ -33,9 +33,9 @@ public class VectorTests {
         Vector3 cameraPosition = new Vector3(0,1,20);
 
         Light[] lights = new Light[3];
-        lights[0] = new PointLight(-10, 10, 12);
-        lights[1] = new PointLight(-10,5,-100);
-        lights[2] = new PointLight(20,100,100);
+        lights[0] = new PointLight(-10, 10, 12, 2, 5, 28);
+        lights[1] = new PointLight(-10,5,-100, 5 , 5, 35);
+        lights[2] = new PointLight(20,100,100, 1.5, 100, 155);
         double pixelWidth = worldWidth/screenWidth;
 
         double cameraDistance = 10;
