@@ -32,13 +32,14 @@ public class VectorTests {
 
         Vector3 cameraPosition = new Vector3(0,1,20);
 
+
         Light[] lights = new Light[3];
-        lights[0] = new PointLight(-10, 10, 12, 2, 5, 28);
+        lights[0] = new PointLight(-10, 10, 12, .5, 5, 28);
         lights[1] = new PointLight(-10,5,-100, 5 , 5, 35);
-        lights[2] = new PointLight(20,100,100, 1.5, 100, 155);
+        lights[2] = new SpotLight(new Vector3(-20, 10, 0), new Vector3(0, 0, 0), 7, 10, 5, 60, 200);
         double pixelWidth = worldWidth/screenWidth;
 
-        double cameraDistance = 10;
+        double cameraDistance = 7;
 
         for (int i = 0; i < screenHeight; i++) {
             for (int j = 0; j < screenWidth; j++) {
