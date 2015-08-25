@@ -20,6 +20,10 @@ public class IntersectResult {
         return color;
     }
 
+    public void setColor(Vector3 color){
+        this.color = color;
+    }
+
     public double getDistanceToCamera() {
         return distanceToRayOrigin;
     }

@@ -15,7 +15,7 @@ public class VectorTests {
         double aspectRatio = (double) screenWidth/screenHeight;
         double worldHeight = worldWidth/aspectRatio;
 
-        Scene myScene = new Scene(6);
+        Scene myScene = new Scene(6,3);
         myScene.put(new Sphere3(new Vector3 (0,1,0),2, new Vector3 (0.2, 0.5, 0.1)));
         myScene.put(new Sphere3(new Vector3 (-3,3.5,0.7),0.1, new Vector3 (0.1, 0.2, 0.4)));
         myScene.put(new Sphere3(new Vector3 (3,0,0),2, new Vector3 (0.8, 0.2, 0.2)));
@@ -24,19 +24,15 @@ public class VectorTests {
         myScene.put(new Sphere3(new Vector3 (8,1,-20),8, new Vector3 (0.3, 0.2, 0.7)));
         myScene.put(new Sphere3(new Vector3 (-2,1.5,8),0.3));
         myScene.put(new Plane3(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.2, 0.5)));
-        //myScene.put(new Plane3(new Vector3(10,0,0), new Vector3(1,1,0), new Vector3(0.5, 0.5, 0.5)));
-        //myScene.put(new Plane3(new Vector3(0,0,-150), new Vector3(0,0,-1), new Vector3(0.5, 0.5, 0.5)));
 
-        System.out.println(myScene.getNumGeometry());
-        System.out.println("start");
+        myScene.put(new PointLight(-10, 10, 15, .75, 5, 28));
+        myScene.put(new PointLight(-10,5,-100, 5 , 5, 35));
+        myScene.put(new SpotLight(new Vector3(-20, 10, 0), new Vector3(0, 0, 0), 7, 40, 5, 60, 200));
+        myScene.put(new Plane3(new Vector3(12,0,0), new Vector3(-3,-1,0), new Vector3(0.8, 0.5, 0.8)));
+        //myScene.put(new Plane3(new Vector3(0,0,-150), new Vector3(0,0,-1), new Vector3(0.5, 0.5, 0.5)));
 
         Vector3 cameraPosition = new Vector3(0,1,20);
 
-
-        Light[] lights = new Light[3];
-        lights[0] = new PointLight(-10, 10, 12, .5, 5, 28);
-        lights[1] = new PointLight(-10,5,-100, 5 , 5, 35);
-        lights[2] = new SpotLight(new Vector3(-20, 10, 0), new Vector3(0, 0, 0), 7, 10, 5, 60, 200);
         double pixelWidth = worldWidth/screenWidth;
 
         double cameraDistance = 7;
@@ -50,31 +46,14 @@ public class VectorTests {
                 Ray3 test = new Ray3(cameraPosition, cameraDirection);
                 IntersectResult finalResult = myScene.castRay(test);
 
-
                 if (finalResult != null) {
 
-                    Vector3 ambient = new Vector3(0.1, 0.1, 0.3);
-                    ambient.cwise(finalResult.getColor());
-                    Vector3 light = new Vector3(ambient);
-
-                    for(Light eachLight : lights) {
-                        light.add(eachLight.addedLight(finalResult, cameraPosition, myScene));
-                    }
-
-                    light.clamp();
-
-                    surface.renderPixel(j, i, (float) light.getX(), (float) light.getY(), (float) light.getZ());
-
+                    surface.renderPixel(j, i, (float) finalResult.getColor().getX(), (float) finalResult.getColor().getY(), (float) finalResult.getColor().getZ());
 
                 }
             }
         }
 
-
-
-
-
-
-
     }
+
 }

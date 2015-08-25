@@ -4,33 +4,63 @@
 public class Scene {
     private Geometry[] geometryArray;
     private int numGeometry;
+    private Light[] lightArray;
+    private int numLight;
 
-    public Scene(int i){
+    public Scene(int i, int j){
         geometryArray = new Geometry[i];
         numGeometry = 0;
+        lightArray = new Light[j];
+        numLight = 0;
     }
 
     public IntersectResult castRay(Ray3 ray){
+        IntersectResult finalResult = checkIntersect(ray);
+        if(finalResult != null){
+            finalResult = calcFinalColor(finalResult, ray);
+        }
+        return finalResult;
+    }
+
+    public IntersectResult checkIntersect(Ray3 ray){
         //intersection code to be placed here
         Ray3 test =ray;
-        IntersectResult finalResult = null;
+        IntersectResult finalIntersect = null;
 
         for (int k = 0; k<numGeometry; k++) {
             //Calculate the intersection point for each object here, then choose which one to keep
-            IntersectResult currentResult = geometryArray[k].intersect(test);
+            IntersectResult currentIntersect = geometryArray[k].intersect(test);
 
-            if (currentResult != null) {
+            if (currentIntersect != null) {
 
-                if (finalResult == null) {
-                    finalResult = currentResult;
+                if (finalIntersect == null) {
+                    finalIntersect = currentIntersect;
 
-                } else if (currentResult.getDistanceToCamera() < finalResult.getDistanceToCamera()) {
-                    finalResult = currentResult;
-
+                } else if (currentIntersect.getDistanceToCamera() < finalIntersect.getDistanceToCamera()) {
+                    finalIntersect = currentIntersect;
                 }
             }
         }
-        return finalResult;
+        return finalIntersect;
+    }
+
+    public IntersectResult calcFinalColor(IntersectResult intersect, Ray3 ray){
+
+       if (intersect != null) {
+
+            Vector3 ambient = new Vector3(0.1, 0.1, 0.3);
+            ambient.cwise(intersect.getColor());
+            Vector3 light = new Vector3(ambient);
+
+            for (Light eachLight : lightArray) {
+                light.add(eachLight.addedLight(intersect, ray.getOrigin(), this));
+            }
+
+            light.clamp();
+            intersect.setColor(light);
+        }
+
+        return intersect;
 
     }
 
@@ -41,6 +71,17 @@ public class Scene {
         if (numGeometry < geometryArray.length){
             geometryArray[numGeometry] = object;
             numGeometry++;
+        }
+
+    }
+
+    public void put(Light object){
+        if (numLight == lightArray.length) {
+            this.expandStorage(); //need expand storage to work with light arrays too
+        }
+        if (numLight < lightArray.length){
+            lightArray[numLight] = object;
+            numLight++;
         }
 
     }

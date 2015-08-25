@@ -23,7 +23,7 @@ public class PointLight extends Light {
         //returns a vector for the added light for a particular point/pixel
 
         Ray3 shadow = new Ray3(finalResult.getIntersect(), new Vector3(getLightPosition().minus(finalResult.getIntersect())));
-        IntersectResult shadowResult = myScene.castRay(shadow);
+        IntersectResult shadowResult = myScene.checkIntersect(shadow);
         if (shadowResult != null && shadowResult.getDistanceToCamera() > getLightPosition().minus(shadow.getOrigin()).getLength()){
             shadowResult = null;
         }
