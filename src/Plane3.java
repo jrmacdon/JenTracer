@@ -5,14 +5,15 @@ public class Plane3 extends Geometry {
     private Vector3 normal;
 
     public Plane3(){
-        this(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.5, 0.5));
+        this(new Vector3(0,0,0), new Vector3(0,1,0), new Vector3(0.5, 0.5, 0.5), 0);
 
     }
 
-    public Plane3(Vector3 point, Vector3 normal, Vector3 color){
+    public Plane3(Vector3 point, Vector3 normal, Vector3 color, double reflectivity){
         this.setOrigin(point);
         this.normal = normal;
         this.setColor(color);
+        this.setReflectivity(reflectivity);
     }
 
     public IntersectResult intersect(Ray3 ray){
@@ -43,7 +44,7 @@ public class Plane3 extends Geometry {
 
         if (intersection != null){
             distanceToCamera = intersection.distanceTo(ray.getOrigin());
-            IntersectResult result = new IntersectResult(intersection, normal, distanceToCamera, getColor());
+            IntersectResult result = new IntersectResult(intersection, normal, distanceToCamera, getColor(), getReflectivity());
             return result;
         } else{
             return null;

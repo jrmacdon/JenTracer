@@ -6,13 +6,15 @@ public class IntersectResult {
     private Vector3 normal;
     private double distanceToRayOrigin;
     private Vector3 color;
+    private double reflectivity;
 
 
-    public IntersectResult(Vector3 intersect,Vector3 normal, double distanceToRayOrigin, Vector3 color){
+    public IntersectResult(Vector3 intersect,Vector3 normal, double distanceToRayOrigin, Vector3 color, double reflectivity){
         this.intersect = intersect;
         this.normal = normal;
         this.distanceToRayOrigin = distanceToRayOrigin;
         this.color = color;
+        this.reflectivity = reflectivity;
     }
 
 
@@ -22,6 +24,10 @@ public class IntersectResult {
 
     public void setColor(Vector3 color){
         this.color = color;
+    }
+
+    public double getReflectivity(){
+        return reflectivity;
     }
 
     public double getDistanceToCamera() {

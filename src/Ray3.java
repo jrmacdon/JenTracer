@@ -34,7 +34,13 @@ public class Ray3 {
         return origin;
     }
 
-    public Vector3 getDirection() {
-        return direction;
+    public Vector3 getDirection(){ return direction; }
+
+    public void setDirection(Vector3 direction){
+        this.direction = direction;
+    }
+
+    public void setOrigin(Vector3 origin) {
+        this.origin = origin;
     }
 }

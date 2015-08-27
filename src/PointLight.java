@@ -54,7 +54,7 @@ public class PointLight extends Light {
         diffuse.cwise(color);
 
         if (diffuse_dp >= 0 && shadowResult == null) {
-            addedLight = diffuse.scale(diffuse_dp).add(specular);
+            addedLight = diffuse.scale(diffuse_dp);//.add(specular);
         }
 
         //attenuation

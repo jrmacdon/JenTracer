@@ -5,17 +5,18 @@ public class Sphere3 extends Geometry {
     private double radius;
 
     public Sphere3(){
-        this(new Vector3(), 0);
+        this(new Vector3(), 0, new Vector3(), 0.5);
     }
 
     public Sphere3(Vector3 origin, double radius){
-        this(origin, radius, new Vector3 (0.5, 0.5, 0.5));
+        this(origin, radius, new Vector3 (0.5, 0.5, 0.5), 0.5);
     }
 
-    public Sphere3(Vector3 origin, double radius, Vector3 color){
+    public Sphere3(Vector3 origin, double radius, Vector3 color, double reflectivity){
         this.setOrigin(origin);
         this.radius = radius;
         this.setColor(color);
+        this.setReflectivity(reflectivity);
     }
 
     public Sphere3(double x, double y, double z, double r){
@@ -77,7 +78,7 @@ public class Sphere3 extends Geometry {
             normal = new Vector3(intersect.minus(getOrigin()));
             normal.normalize();
             distanceToCamera = intersect.distanceTo(ray.getOrigin());
-            return new IntersectResult(intersect, normal, distanceToCamera, getColor());
+            return new IntersectResult(intersect, normal, distanceToCamera, getColor(), getReflectivity());
 
         } else{
             return null;

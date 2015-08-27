@@ -52,8 +52,8 @@ public class Scene {
             ambient.cwise(intersect.getColor());
             Vector3 light = new Vector3(ambient);
 
-            for (Light eachLight : lightArray) {
-                light.add(eachLight.addedLight(intersect, ray.getOrigin(), this));
+           for (int k = 0; k<numLight; k++) {
+                light.add(lightArray[k].addedLight(intersect, ray.getOrigin(), this));
             }
 
             light.clamp();
@@ -63,6 +63,50 @@ public class Scene {
         return intersect;
 
     }
+
+    public IntersectResult calcReflectionColor(Ray3 ray, int depth){
+        IntersectResult finalResult = checkIntersect(ray);
+        Ray3 reflectedRay = new Ray3();
+        if(finalResult != null) {
+            finalResult = calcFinalColor(finalResult, ray);
+            reflectedRay.setOrigin(finalResult.getIntersect());
+            reflectedRay.setDirection(ray.getDirection().scale(-1.0).reflect(finalResult.getNormal()));
+
+            //scale reflectivity constant by direction of surface
+
+            double reflectivityScale = 1.0 - finalResult.getNormal().dot(ray.getDirection().normalized());
+            double minScaleFactor = 0.5;
+            double maxScaleFactor = 3.0;
+            reflectivityScale = (maxScaleFactor - minScaleFactor)*Math.pow(reflectivityScale,2.0) + minScaleFactor;
+
+
+
+            Vector3 C = finalResult.getColor();
+            double R = finalResult.getReflectivity()*reflectivityScale;
+            if (R > 1){
+                R = 1;
+            }else if(R < 0){
+                R = 0;
+            }
+            //define the variables I'm about to use: reflectivity constants, color pre-reflection
+
+            if (depth > 0 && finalResult.getReflectivity() > 0.0) {
+                //set color at point to include reflectivity
+                Vector3 colorWithReflection = new Vector3();
+                colorWithReflection = finalResult.getColor().scale(1 - R);
+                colorWithReflection.add((calcReflectionColor(reflectedRay, depth - 1).getColor()).scale(R));
+                finalResult.setColor(colorWithReflection);
+                return finalResult;
+
+            } else {
+                return finalResult;
+            }
+        }else {
+            finalResult = new IntersectResult(new Vector3(),new Vector3(),0, new Vector3(), 0);
+            return finalResult;
+        }
+    }
+
 
     public void put(Geometry object){
        if (numGeometry == geometryArray.length) {
